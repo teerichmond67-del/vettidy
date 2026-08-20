@@ -59,18 +59,18 @@ needed there.
       forward via Namecheap's free email forwarding (confirmed working with
       a real end-to-end test). MX records point to
       `eforward*.registrar-servers.com`.
-- [ ] **DNS (web hosting)** — `vettidy.com`'s `A` record still points to
-      Namecheap's default parking IP (`192.64.119.109`), not Vercel. To
-      connect it:
-      1. In the [Vercel dashboard](https://vercel.com/rich-101a/vettidy/settings/domains),
-         add `vettidy.com` as a domain on the `vettidy` project.
-      2. At Namecheap, in `vettidy.com`'s DNS settings, add:
-         - `A` record, host `@`, value `76.76.21.21`
-         - `CNAME` record, host `www`, value `cname.vercel-dns-0.com`
-      3. Vercel will show the exact records to use if these have changed —
-         trust what its dashboard says over this file.
-      4. This is separate from email forwarding (already done, above) — an
-         `A` record for `@` doesn't affect the MX records already in place.
+- [x] **Domain added to Vercel project** — `vettidy.com` and
+      `www.vettidy.com` both added under Domains in the `vettidy` Vercel
+      project. Showing "Invalid Configuration" until the DNS records below
+      are added at Namecheap.
+- [ ] **DNS (web hosting)** — add/update these two records at Namecheap
+      (leave the MX records alone — those are email forwarding, already
+      done above):
+      - `A` record, host `@`, value `216.198.79.1`
+      - `CNAME` record, host `www`, value `1a147cf5aa441a14.vercel-dns-017.com`
+      These are per-project values from Vercel's own dashboard as of
+      2026-08-21 — if the dashboard ever shows different values, trust
+      those over this file, not the other way around.
       Once live, swap the `https://vettidy.vercel.app` references in
       `docs/store/app-store-listing.md` and `docs/store/play-store-listing.md`
       for `https://vettidy.com`.

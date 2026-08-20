@@ -74,22 +74,26 @@ pet health,vaccine tracker,medication reminder,pet records,vet,dog,cat,pet care,
 ## Support URL
 
 ```
-https://vettidy.com/support   (domain is registered — page not live yet)
+https://vettidy.vercel.app/support
 ```
+Live now. Swap for `https://vettidy.com/support` once DNS is connected
+(see `docs/store/submission-checklist.md`).
 
 ## Marketing URL (optional)
 
 ```
-(none yet — optional)
+https://vettidy.vercel.app
 ```
 
 ## Privacy Policy URL
 
 ```
-https://claude.ai/code/artifact/dec1c160-e02c-41ee-b7f3-7cadc162030e
+https://vettidy.vercel.app/privacy
 ```
-Replace with a permanent URL on your own domain before submitting for real.
-See `docs/privacy-policy.md` for the source content.
+Live now, matches `docs/privacy-policy.md`. Swap for
+`https://vettidy.com/privacy` once DNS is connected. The original Artifact
+version is still up as a fallback:
+https://claude.ai/code/artifact/dec1c160-e02c-41ee-b7f3-7cadc162030e
 
 ## Age rating questionnaire — expected answers
 

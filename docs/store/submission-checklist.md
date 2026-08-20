@@ -28,12 +28,17 @@ environment.
       (generic ones risk Apple rejection).
 - [x] **`eas.json`** — development / preview / production build profiles.
 - [x] **Privacy policy** — drafted from the app's actual data flows, not
-      generic boilerplate. Published at
+      generic boilerplate. Saved as `docs/privacy-policy.md` and hosted at
+      `/privacy` on the `website/` static site (see Domain section below);
+      also still live as an Artifact at
       https://claude.ai/code/artifact/dec1c160-e02c-41ee-b7f3-7cadc162030e
-      and saved as `docs/privacy-policy.md`.
+      as a fallback.
 - [x] **Store listing copy** — `docs/store/app-store-listing.md` and
       `docs/store/play-store-listing.md`, including Apple's App Privacy
       answers and Google's Data Safety form answers.
+- [x] **Marketing/privacy/support site** — `website/` (home, `/privacy`,
+      `/support`), deployed to Vercel at https://vettidy.vercel.app.
+      Custom domain not yet attached — see Domain section below.
 
 ## ⚠️ Before your first real submission
 
@@ -47,23 +52,31 @@ needed there.
 ## Domain (vettidy.com)
 
 - [x] **Registered** — via Namecheap.
-- [ ] **DNS / hosting** — nothing is pointed at the domain yet. Needed
-      before `privacy@vettidy.com`, `https://vettidy.com/support`, or a
-      real (non-Artifact) privacy policy URL are actually live. Any static
-      host works (Vercel, Netlify, GitHub Pages) — tell me if you want
-      help picking one and wiring the DNS records at Namecheap.
-- [ ] **Universal Links (iOS) / App Links (Android)** — not wired up.
-      Two separate blockers: (1) needs your Apple Team ID and the app's
-      Android signing SHA-256 fingerprint to generate
-      `apple-app-site-association` / `assetlinks.json`, neither of which
-      exist until you've done the EAS/Apple Developer steps below; (2) the
-      app itself has no deep-link routing yet — `Linking.createURL` builds
-      an invite link (`src/components/CreateInviteModal.tsx`), but
-      `NavigationContainer` has no `linking` config to route an incoming
-      link to the actual join screen, so tapping it currently just opens
-      the app with no effect. That's a real gap worth fixing regardless of
-      the domain — worth a separate pass before this is wired to the
-      domain.
+- [x] **Hosting** — `website/` deployed to Vercel, live at
+      https://vettidy.vercel.app (project `vettidy` under the `RICH`
+      team). Home, `/privacy`, `/support`.
+- [ ] **DNS** — `vettidy.com` isn't pointed at the Vercel deployment yet.
+      To connect it:
+      1. In the [Vercel dashboard](https://vercel.com/rich-101a/vettidy/settings/domains),
+         add `vettidy.com` as a domain on the `vettidy` project.
+      2. At Namecheap, in `vettidy.com`'s DNS settings, add:
+         - `A` record, host `@`, value `76.76.21.21`
+         - `CNAME` record, host `www`, value `cname.vercel-dns-0.com`
+      3. Vercel will show the exact records to use if these have changed —
+         trust what its dashboard says over this file.
+      4. Once DNS propagates (minutes to a few hours), `privacy@vettidy.com`
+         mailbox/forwarding still needs separate setup — a DNS/hosting
+         provider doesn't include email by default.
+      Once live, swap the `https://vettidy.vercel.app` references in
+      `docs/store/app-store-listing.md` and `docs/store/play-store-listing.md`
+      for `https://vettidy.com`.
+- [ ] **Universal Links (iOS) / App Links (Android)** — not wired up yet.
+      The app's own deep-link routing is fixed (`src/navigation/linking.ts`
+      handles `vettidy://invite/CODE`), but the *domain-backed* version
+      (`https://vettidy.com/invite/...`) additionally needs your Apple Team
+      ID and the app's Android signing SHA-256 fingerprint to generate
+      `apple-app-site-association` / `assetlinks.json` — neither exists
+      until the EAS/Apple Developer steps below are done.
 
 ## Needs your own accounts / hardware — not reachable from here
 

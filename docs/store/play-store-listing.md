@@ -59,8 +59,8 @@ your records stay your own, exportable and shareable on your terms.
 ## Contact details
 
 ```
-Email:   privacy@vettidy.example   (placeholder — replace)
-Website: https://vettidy.example    (placeholder — replace)
+Email:   privacy@vettidy.com   (domain registered — set up mailbox/forwarding)
+Website: https://vettidy.com    (domain registered — not hosted yet)
 ```
 
 ## Privacy Policy URL

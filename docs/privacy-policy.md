@@ -110,5 +110,5 @@ seen it.
 ## 8. Contact us
 
 Questions, requests, or a deletion request — reach us at
-`privacy@vettidy.example` *(placeholder address — replace before
-submission)*.
+`privacy@vettidy.com` *(domain is registered — set up mailbox/forwarding
+for this address before submission)*.

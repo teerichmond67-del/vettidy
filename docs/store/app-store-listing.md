@@ -74,7 +74,7 @@ pet health,vaccine tracker,medication reminder,pet records,vet,dog,cat,pet care,
 ## Support URL
 
 ```
-https://vettidy.example/support   (placeholder — replace with a real page)
+https://vettidy.com/support   (domain is registered — page not live yet)
 ```
 
 ## Marketing URL (optional)

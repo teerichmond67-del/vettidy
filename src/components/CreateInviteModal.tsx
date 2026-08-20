@@ -55,7 +55,7 @@ export function CreateInviteModal({
 
     try {
       await Share.share({
-        message: `Join our pet's care team on Pet Health App! Open this link (or enter the code ${result.data.code} under Join a Pack): ${link}`,
+        message: `Join our pet's care team on VetTidy! Open this link (or enter the code ${result.data.code} under Join a Pack): ${link}`,
       });
     } catch {
       // The invite itself was already created successfully — the code is

@@ -113,7 +113,7 @@ function buildPetRecordHtml(
       </head>
       <body>
         <h1>${cell(pet.name)}</h1>
-        <p class="meta">Generated ${escapeHtml(generatedAt)} · Pet Health App</p>
+        <p class="meta">Generated ${escapeHtml(generatedAt)} · VetTidy</p>
 
         <div class="profile-row">
           <div class="profile-item"><div class="profile-label">Species</div><div class="profile-value">${cell(pet.species)}</div></div>

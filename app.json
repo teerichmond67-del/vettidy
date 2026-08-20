@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "Pet Health App",
-    "slug": "pet-health-app",
-    "scheme": "pet-health-app",
+    "name": "VetTidy",
+    "slug": "vettidy",
+    "scheme": "vettidy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.pethealthapp.app",
+      "bundleIdentifier": "com.vettidy.app",
       "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
-      "package": "com.pethealthapp.app",
+      "package": "com.vettidy.app",
       "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#1F3D2B",
@@ -34,8 +34,8 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "Pet Health App uses your camera so you can photograph receipts, vaccination certificates, and other documents to attach to your pet's health record.",
-          "photosPermission": "Pet Health App uses your photo library so you can attach an existing photo to your pet's profile or health record."
+          "cameraPermission": "VetTidy uses your camera so you can photograph receipts, vaccination certificates, and other documents to attach to your pet's health record.",
+          "photosPermission": "VetTidy uses your photo library so you can attach an existing photo to your pet's profile or health record."
         }
       ],
       [

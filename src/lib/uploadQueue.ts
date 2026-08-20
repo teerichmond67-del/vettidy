@@ -6,7 +6,7 @@ import { Directory, File, Paths } from 'expo-file-system';
 
 import { supabase } from './supabase';
 
-const QUEUE_STORAGE_KEY = 'pet-health-app:upload-queue';
+const QUEUE_STORAGE_KEY = 'vettidy:upload-queue';
 const DOCUMENTS_BUCKET = 'documents';
 
 const queueDirectory = new Directory(Paths.document, 'upload-queue');

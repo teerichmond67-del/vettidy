@@ -7,7 +7,7 @@
 ## App name (30 char max)
 
 ```
-Pet Health App
+VetTidy
 ```
 
 ## Subtitle (30 char max)
@@ -28,7 +28,7 @@ reminders — and real-time sharing with the people who help you care for them.
 ```
 Stop juggling three different apps for one pet.
 
-Pet Health App keeps a pet's profile, documents, vaccination history, and
+VetTidy keeps a pet's profile, documents, vaccination history, and
 medical records in a single place — built for owners who want both the
 casual memory-keeping and the rigorous record-keeping, without picking a
 lane.
@@ -54,7 +54,7 @@ Built on the details that matter: your data is scoped so only the people
 you invite can see it, uploads are never silently dropped, and species is
 never limited to a hardcoded list — axolotls and bearded dragons welcome.
 
-Pet Health App does not connect to your vet's practice-management system —
+VetTidy does not connect to your vet's practice-management system —
 your records stay your own, exportable and shareable on your terms.
 ```
 
@@ -74,7 +74,7 @@ pet health,vaccine tracker,medication reminder,pet records,vet,dog,cat,pet care,
 ## Support URL
 
 ```
-https://pethealthapp.example/support   (placeholder — replace with a real page)
+https://vettidy.example/support   (placeholder — replace with a real page)
 ```
 
 ## Marketing URL (optional)
@@ -112,5 +112,5 @@ parties.
 ## What's New (first submission)
 
 ```
-Welcome to Pet Health App! This is our first release.
+Welcome to VetTidy! This is our first release.
 ```

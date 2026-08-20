@@ -1,7 +1,7 @@
-# Pet Health App — Privacy Policy
+# VetTidy — Privacy Policy
 
 **Effective & last updated:** August 20, 2026
-**Applies to:** Pet Health App (iOS & Android)
+**Applies to:** VetTidy (iOS & Android)
 
 > **Founder note:** this policy is drafted directly from the app's actual data
 > flows for MVP development and store-submission testing. The app name,
@@ -97,7 +97,7 @@ short-lived, authenticated links, never a public URL.
 
 ## 6. Children's privacy
 
-Pet Health App isn't directed at children, and we don't knowingly collect
+VetTidy isn't directed at children, and we don't knowingly collect
 information from anyone under 13. If you believe a child has created an
 account, contact us and we'll remove it.
 
@@ -110,5 +110,5 @@ seen it.
 ## 8. Contact us
 
 Questions, requests, or a deletion request — reach us at
-`privacy@pethealthapp.example` *(placeholder address — replace before
+`privacy@vettidy.example` *(placeholder address — replace before
 submission)*.

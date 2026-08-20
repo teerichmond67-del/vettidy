@@ -14,10 +14,11 @@ environment.
       is confirmed (Spec.md §13, open decision #4).
 - [x] **Splash screen** — configured via `expo-splash-screen`, using the
       same mark on a matching background.
-- [x] **Bundle identifier / package name** — `com.pethealthapp.app` for
-      both `ios.bundleIdentifier` and `android.package`. **This is a
-      placeholder tied to the placeholder app name — see the warning
-      below, it needs to be finalized before your first real submission.**
+- [x] **Bundle identifier / package name** — `com.vettidy.app` for
+      both `ios.bundleIdentifier` and `android.package`, matching the
+      confirmed app name (VetTidy). **Still worth a final sanity check
+      before your first real submission — see the warning below, since
+      this is effectively permanent once you submit.**
 - [x] **Build numbers** — `ios.buildNumber: "1"`, `android.versionCode: 1`.
 - [x] **iOS export-compliance flag** — `ITSAppUsesNonExemptEncryption:
       false` set, so App Store Connect won't prompt for an encryption
@@ -37,10 +38,10 @@ environment.
 ## ⚠️ Before your first real submission
 
 **Bundle identifier / package name is effectively permanent.** Once an app
-is submitted under `com.pethealthapp.app`, changing it later means
-starting over as a *new* app listing (losing reviews, install counts,
-ASO history). If you have a real domain, use its reverse form instead
-(e.g. a domain `ralphtee.dev` → `dev.ralphtee.pethealth`) before your
+is submitted under `com.vettidy.app`, changing it later means starting
+over as a *new* app listing (losing reviews, install counts, ASO
+history). If you register a real domain for VetTidy, consider using its
+reverse form instead (e.g. `vettidy.app` → `app.vettidy`) before your
 first submission — not after.
 
 ## Needs your own accounts / hardware — not reachable from here

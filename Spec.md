@@ -1,4 +1,4 @@
-# Spec.md — Pet Health & Care App MVP
+# Spec.md — VetTidy MVP
 
 **Purpose of this document:** this is a build brief for Claude Code. It defines what to build, in what order, and why — every requirement below traces back to a specific complaint or gap found in competitive research (see `pet-health-app-research.md` and `pet-app-mvp-data-model.md` if included in this repo). Where a decision hasn't been confirmed by the founder, it's marked **[ASSUMPTION]** — flag it back to the founder before treating it as final, but proceed with the stated default so the build isn't blocked.
 

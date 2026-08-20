@@ -1,0 +1,17 @@
+export const SPECIES_SUGGESTIONS = [
+  'Dog',
+  'Cat',
+  'Rabbit',
+  'Bird',
+  'Hamster',
+  'Guinea Pig',
+  'Reptile',
+  'Fish',
+  'Horse',
+  'Ferret',
+  'Turtle',
+  'Snake',
+  'Lizard',
+  'Chicken',
+  'Hedgehog',
+];

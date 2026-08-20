@@ -24,6 +24,11 @@ export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
   PetDetail: { petId: string };
+  PetForm: { petId?: string };
+  VaccinationForm: { petId: string; vaccinationId?: string };
+  MedicationDetail: { petId: string; medicationId: string };
+  MedicationForm: { petId: string; medicationId?: string };
+  WeightEntryForm: { petId: string; weightEntryId?: string };
   Paywall: { trigger: PaywallTrigger };
 };
 

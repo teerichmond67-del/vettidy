@@ -62,14 +62,6 @@ export function PackScreen() {
     }, [refetchMembers, refetchInvites]),
   );
 
-  useEffect(() => {
-    const inviteCode = route.params?.inviteCode;
-    if (inviteCode) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- prefilling from an incoming deep link, not derived state
-      setJoinCode(inviteCode.toUpperCase());
-    }
-  }, [route.params?.inviteCode]);
-
   const handleInvitePress = () => {
     if (guardPremium('pack_invite')) return;
     setInviteModalVisible(true);
@@ -111,23 +103,37 @@ export function PackScreen() {
     ]);
   };
 
-  const handleJoin = async () => {
-    const code = joinCode.trim().toUpperCase();
-    if (!code) return;
+  const joinWithCode = useCallback(
+    async (code: string) => {
+      const trimmed = code.trim().toUpperCase();
+      if (!trimmed) return;
 
-    setJoining(true);
-    const result = await redeemPackInvite(code);
-    setJoining(false);
+      setJoining(true);
+      const result = await redeemPackInvite(trimmed);
+      setJoining(false);
 
-    if (result.error) {
-      Alert.alert('Could not join', result.error);
-      return;
+      if (result.error) {
+        Alert.alert('Could not join', result.error);
+        return;
+      }
+
+      setJoinCode('');
+      await refetchPack();
+      Alert.alert('Joined!', "You're now part of that pack.");
+    },
+    [refetchPack],
+  );
+
+  const handleJoin = () => joinWithCode(joinCode);
+
+  useEffect(() => {
+    const inviteCode = route.params?.inviteCode;
+    if (inviteCode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- prefilling from an incoming deep link, not derived state
+      setJoinCode(inviteCode.toUpperCase());
+      joinWithCode(inviteCode);
     }
-
-    setJoinCode('');
-    await refetchPack();
-    Alert.alert('Joined!', "You're now part of that pack.");
-  };
+  }, [route.params?.inviteCode, joinWithCode]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>

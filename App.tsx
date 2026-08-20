@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from './src/hooks/useAuth';
 import { PackProvider } from './src/hooks/usePack';
 import { EntitlementProvider } from './src/hooks/useEntitlement';
 import { RootNavigator } from './src/navigation/RootNavigator';
+import { linking } from './src/navigation/linking';
 import { OfflineBanner } from './src/components/OfflineBanner';
 import { initUploadQueue } from './src/lib/uploadQueue';
 import { configureNotifications } from './src/lib/notifications';
@@ -37,7 +38,7 @@ export default function App() {
         <PackProvider>
           <EntitlementProvider>
             <View style={styles.root}>
-              <NavigationContainer>
+              <NavigationContainer linking={linking}>
                 <AppContent />
               </NavigationContainer>
               <OfflineBanner />

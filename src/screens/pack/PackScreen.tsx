@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -9,7 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useRoute, type RouteProp } from '@react-navigation/native';
 
 import { CreateInviteModal } from '../../components/CreateInviteModal';
 import { useAuth } from '../../hooks/useAuth';
@@ -20,6 +20,7 @@ import { usePaywallGate } from '../../hooks/usePaywallGate';
 import { usePendingInvites } from '../../hooks/usePendingInvites';
 import { useRealtimeRefetch } from '../../hooks/useRealtimeRefetch';
 import { deletePackInvite, redeemPackInvite, removePackMember } from '../../lib/packApi';
+import type { MainTabParamList } from '../../navigation/types';
 
 const ROLE_LABELS: Record<string, string> = {
   owner: 'Owner',
@@ -28,6 +29,7 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 export function PackScreen() {
+  const route = useRoute<RouteProp<MainTabParamList, 'Pack'>>();
   const { session } = useAuth();
   const { packId, refetch: refetchPack } = usePack();
   const { isOwner } = useMyPackRole(packId);
@@ -59,6 +61,14 @@ export function PackScreen() {
       refetchInvites();
     }, [refetchMembers, refetchInvites]),
   );
+
+  useEffect(() => {
+    const inviteCode = route.params?.inviteCode;
+    if (inviteCode) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- prefilling from an incoming deep link, not derived state
+      setJoinCode(inviteCode.toUpperCase());
+    }
+  }, [route.params?.inviteCode]);
 
   const handleInvitePress = () => {
     if (guardPremium('pack_invite')) return;

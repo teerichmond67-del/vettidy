@@ -6,7 +6,7 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
-  Pack: undefined;
+  Pack: { inviteCode?: string } | undefined;
   Settings: undefined;
 };
 

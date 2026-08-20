@@ -55,8 +55,13 @@ needed there.
 - [x] **Hosting** — `website/` deployed to Vercel, live at
       https://vettidy.vercel.app (project `vettidy` under the `RICH`
       team). Home, `/privacy`, `/support`.
-- [ ] **DNS** — `vettidy.com` isn't pointed at the Vercel deployment yet.
-      To connect it:
+- [x] **Email forwarding** — `privacy@vettidy.com` and `support@vettidy.com`
+      forward via Namecheap's free email forwarding (confirmed working with
+      a real end-to-end test). MX records point to
+      `eforward*.registrar-servers.com`.
+- [ ] **DNS (web hosting)** — `vettidy.com`'s `A` record still points to
+      Namecheap's default parking IP (`192.64.119.109`), not Vercel. To
+      connect it:
       1. In the [Vercel dashboard](https://vercel.com/rich-101a/vettidy/settings/domains),
          add `vettidy.com` as a domain on the `vettidy` project.
       2. At Namecheap, in `vettidy.com`'s DNS settings, add:
@@ -64,9 +69,8 @@ needed there.
          - `CNAME` record, host `www`, value `cname.vercel-dns-0.com`
       3. Vercel will show the exact records to use if these have changed —
          trust what its dashboard says over this file.
-      4. Once DNS propagates (minutes to a few hours), `privacy@vettidy.com`
-         mailbox/forwarding still needs separate setup — a DNS/hosting
-         provider doesn't include email by default.
+      4. This is separate from email forwarding (already done, above) — an
+         `A` record for `@` doesn't affect the MX records already in place.
       Once live, swap the `https://vettidy.vercel.app` references in
       `docs/store/app-store-listing.md` and `docs/store/play-store-listing.md`
       for `https://vettidy.com`.

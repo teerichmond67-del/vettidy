@@ -116,7 +116,7 @@ create table pets (
   birthdate date,
   is_estimated_age boolean default false,
   microchip_id text,
-  photo_url text,
+  photo_path text, -- storage object path in the documents bucket, not a URL; sign on read
   status text not null default 'active' check (status in ('active', 'deceased')),
   created_at timestamptz default now()
 );

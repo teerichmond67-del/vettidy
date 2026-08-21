@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -16,7 +17,7 @@ import { useMyPackRole } from '../../hooks/useMyPackRole';
 import { usePack } from '../../hooks/usePack';
 import { usePaywallGate } from '../../hooks/usePaywallGate';
 import { usePet } from '../../hooks/usePet';
-import { deletePet, setPetStatus } from '../../lib/petsApi';
+import { deletePet, getSignedPetPhotoUrl, setPetStatus } from '../../lib/petsApi';
 import { exportPetRecordPdf } from '../../lib/pdfExport';
 import type { PetDetailTabParamList, RootStackParamList } from '../../navigation/types';
 import type { Pet } from '../../types/pet';
@@ -36,6 +37,19 @@ export function OverviewTab({ route, navigation }: Props) {
   const { packId } = usePack();
   const { isSitter } = useMyPackRole(packId);
   const [exporting, setExporting] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!pet?.photo_path) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- clearing a stale photo when the pet has none (or changed)
+      setPhotoUrl(null);
+      return;
+    }
+
+    getSignedPetPhotoUrl(pet.photo_path).then((result) => {
+      if (result.url) setPhotoUrl(result.url);
+    });
+  }, [pet?.photo_path]);
 
   useFocusEffect(
     useCallback(() => {
@@ -129,6 +143,8 @@ export function OverviewTab({ route, navigation }: Props) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {photoUrl ? <Image source={{ uri: photoUrl }} style={styles.photo} /> : null}
+
       <Text style={styles.name}>{pet.name}</Text>
       <Text style={styles.species}>{pet.species}</Text>
 
@@ -196,6 +212,13 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     gap: 4,
+  },
+  photo: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 12,
   },
   centered: {
     flex: 1,

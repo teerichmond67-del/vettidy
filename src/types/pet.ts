@@ -10,7 +10,7 @@ export type Pet = {
   birthdate: string | null;
   is_estimated_age: boolean;
   microchip_id: string | null;
-  photo_url: string | null;
+  photo_path: string | null;
   status: PetStatus;
   created_at: string;
 };
@@ -23,4 +23,5 @@ export type PetInput = {
   birthdate?: string | null;
   is_estimated_age?: boolean;
   microchip_id?: string | null;
+  photo_path?: string | null;
 };

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
+  Image,
   Platform,
   Pressable,
   ScrollView,
@@ -11,12 +13,13 @@ import {
   View,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as ImagePicker from 'expo-image-picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { SpeciesInput } from '../../components/SpeciesInput';
 import { usePack } from '../../hooks/usePack';
 import { usePet } from '../../hooks/usePet';
-import { createPet, updatePet } from '../../lib/petsApi';
+import { createPet, getSignedPetPhotoUrl, updatePet, uploadPetPhoto } from '../../lib/petsApi';
 import type { RootStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PetForm'>;
@@ -49,6 +52,10 @@ export function PetFormScreen({ route, navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const [photoPreviewUri, setPhotoPreviewUri] = useState<string | null>(null);
+  const [pickedPhoto, setPickedPhoto] = useState<{ uri: string; mimeType: string } | null>(null);
+  const [photoRemoved, setPhotoRemoved] = useState(false);
+
   useEffect(() => {
     navigation.setOptions({ title: isEditing ? 'Edit Pet' : 'Add Pet' });
   }, [isEditing, navigation]);
@@ -67,7 +74,65 @@ export function PetFormScreen({ route, navigation }: Props) {
     setBirthdate(pet.birthdate ? new Date(pet.birthdate) : null);
     setIsEstimatedAge(pet.is_estimated_age);
     setMicrochipId(pet.microchip_id ?? '');
+
+    if (pet.photo_path) {
+      getSignedPetPhotoUrl(pet.photo_path).then((result) => {
+        if (result.url) setPhotoPreviewUri(result.url);
+      });
+    }
   }, [pet]);
+
+  const handleChoosePhotoSource = () => {
+    const options: { text: string; style?: 'cancel' | 'destructive'; onPress?: () => void }[] = [
+      { text: 'Take Photo', onPress: () => pickPhoto('camera') },
+      { text: 'Choose Photo', onPress: () => pickPhoto('library') },
+    ];
+    if (photoPreviewUri) {
+      options.push({
+        text: 'Remove Photo',
+        style: 'destructive',
+        onPress: () => {
+          setPickedPhoto(null);
+          setPhotoPreviewUri(null);
+          setPhotoRemoved(true);
+        },
+      });
+    }
+    options.push({ text: 'Cancel', style: 'cancel' });
+
+    Alert.alert('Pet Photo', undefined, options);
+  };
+
+  const pickPhoto = async (source: 'camera' | 'library') => {
+    const permission =
+      source === 'camera'
+        ? await ImagePicker.requestCameraPermissionsAsync()
+        : await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert(
+        source === 'camera' ? 'Camera access needed' : 'Photo library access needed',
+        'Enable access in Settings to set a pet photo.',
+      );
+      return;
+    }
+
+    const result =
+      source === 'camera'
+        ? await ImagePicker.launchCameraAsync({ quality: 0.8, allowsEditing: true, aspect: [1, 1] })
+        : await ImagePicker.launchImageLibraryAsync({
+            quality: 0.8,
+            allowsEditing: true,
+            aspect: [1, 1],
+          });
+
+    if (result.canceled || !result.assets[0]) return;
+
+    const asset = result.assets[0];
+    setPickedPhoto({ uri: asset.uri, mimeType: asset.mimeType ?? 'image/jpeg' });
+    setPhotoPreviewUri(asset.uri);
+    setPhotoRemoved(false);
+  };
 
   const handleSave = async () => {
     if (!name.trim() || !species.trim()) {
@@ -83,6 +148,26 @@ export function PetFormScreen({ route, navigation }: Props) {
     setError(null);
     setSaving(true);
 
+    let photoPath = pet?.photo_path ?? null;
+
+    if (photoRemoved) {
+      photoPath = null;
+    } else if (pickedPhoto) {
+      if (!packId) {
+        setError('No pack found for this account yet. Please try again in a moment.');
+        setSaving(false);
+        return;
+      }
+
+      const uploadResult = await uploadPetPhoto(packId, pickedPhoto.uri, pickedPhoto.mimeType);
+      if (uploadResult.error || !uploadResult.path) {
+        setError(uploadResult.error ?? 'Could not upload the photo. Please try again.');
+        setSaving(false);
+        return;
+      }
+      photoPath = uploadResult.path;
+    }
+
     const input = {
       name: name.trim(),
       species: species.trim(),
@@ -91,6 +176,7 @@ export function PetFormScreen({ route, navigation }: Props) {
       birthdate: birthdate ? formatDate(birthdate) : null,
       is_estimated_age: isEstimatedAge,
       microchip_id: microchipId.trim() || null,
+      photo_path: photoPath,
     };
 
     const result =
@@ -127,6 +213,21 @@ export function PetFormScreen({ route, navigation }: Props) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Pressable
+        style={styles.photoPicker}
+        onPress={handleChoosePhotoSource}
+        accessibilityRole="button"
+        accessibilityLabel={photoPreviewUri ? "Change pet's photo" : "Add a pet photo"}
+      >
+        {photoPreviewUri ? (
+          <Image source={{ uri: photoPreviewUri }} style={styles.photo} />
+        ) : (
+          <View style={styles.photoPlaceholder}>
+            <Text style={styles.photoPlaceholderText}>Add Photo</Text>
+          </View>
+        )}
+      </Pressable>
+
       <Text style={styles.label}>Name</Text>
       <TextInput
         style={styles.input}
@@ -228,6 +329,32 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     gap: 6,
+  },
+  photoPicker: {
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+  photo: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    backgroundColor: '#f0f0f0',
+  },
+  photoPlaceholder: {
+    width: 112,
+    height: 112,
+    borderRadius: 56,
+    backgroundColor: '#f0f0f0',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  photoPlaceholderText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#888',
   },
   centered: {
     flex: 1,

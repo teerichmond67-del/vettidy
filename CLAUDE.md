@@ -55,6 +55,26 @@ EXPO_PUBLIC_APPLE_SIGNIN_CLIENT_ID=
 EXPO_PUBLIC_GOOGLE_SIGNIN_CLIENT_ID=
 ```
 
+## Local Development (Windows, Android)
+
+Expo Go doesn't work — `react-native-purchases` needs native linking. Use a
+dev client (`expo-dev-client`, already installed) via `npx expo run:android`.
+Requires Android Studio (SDK + an emulator/device) — no Mac needed for
+Android, but iOS is unreachable from Windows without one.
+
+Two env vars are required beyond Android Studio's own install, since its
+installer doesn't set them:
+- `ANDROID_HOME` → `%LOCALAPPDATA%\Android\Sdk`
+- `JAVA_HOME` → Android Studio's bundled JDK (`...\Android Studio\jbr`),
+  not a separately-installed JDK
+
+Also required: `JAVA_TOOL_OPTIONS=--enable-native-access=ALL-UNNAMED`. Without
+it, the Android Gradle Plugin's CMake configure step fails the build over a
+harmless JDK 24+ "restricted method" warning that its own log-scanner
+misreads as a real error (`GeneratePrefabPackagesKt.reportErrors`) — a known
+AGP/newer-JDK incompatibility, not a project bug. All three are already set
+as persistent Windows user environment variables on this machine.
+
 ## Explicitly Out of Scope (do not build unless asked)
 
 Live vet practice-management (PIMS) integration, AI-powered symptom triage, structured daily SymptomLog tracking, journal/memory entries with milestones, standalone appointment scheduling, expense tracking, marketplace/classifieds, B2B tooling, livestock/breeding fields, full offline-first CRDT sync. See `Spec.md` §10.

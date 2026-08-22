@@ -17,14 +17,42 @@ type SignUpResult = AuthResult & { needsEmailConfirmation: boolean };
 type AuthContextValue = {
   session: Session | null;
   initializing: boolean;
+  isPasswordRecovery: boolean;
   signInWithEmail: (email: string, password: string) => Promise<AuthResult>;
   signUpWithEmail: (email: string, password: string) => Promise<SignUpResult>;
   signInWithApple: () => Promise<AuthResult>;
   signInWithGoogle: () => Promise<AuthResult>;
+  sendPasswordResetEmail: (email: string) => Promise<AuthResult>;
+  updatePasswordAfterRecovery: (newPassword: string) => Promise<AuthResult>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<AuthResult>;
   signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+// Path segment of the deep link Supabase's reset-password email points at
+// (see sendPasswordResetEmail's redirectTo). Kept separate from the OAuth
+// callback path so the two flows can't be confused for one another.
+const RESET_PASSWORD_PATH = 'reset-password';
+
+// The reset-password email link carries the recovery session as
+// access_token/refresh_token in the URL, exactly like the OAuth callback
+// above - so it's parsed the same way (expo-auth-session handles both
+// '?' and '#'-delimited params; expo-linking's own parser does not).
+async function tryEstablishRecoverySession(url: string): Promise<boolean> {
+  const { path } = Linking.parse(url);
+  if (path !== RESET_PASSWORD_PATH) return false;
+
+  const { params, errorCode } = QueryParams.getQueryParams(url);
+  if (errorCode || !params.access_token || !params.refresh_token) return false;
+
+  const { error } = await supabase.auth.setSession({
+    access_token: params.access_token,
+    refresh_token: params.refresh_token,
+  });
+
+  return !error;
+}
 
 async function signInWithOAuthProvider(provider: OAuthProvider): Promise<AuthResult> {
   const redirectTo = Linking.createURL('/auth-callback');
@@ -66,6 +94,7 @@ async function signInWithOAuthProvider(provider: OAuthProvider): Promise<AuthRes
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [initializing, setInitializing] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -80,10 +109,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => listener.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const handleUrl = (url: string) => {
+      tryEstablishRecoverySession(url).then((matched) => {
+        if (matched) setIsPasswordRecovery(true);
+      });
+    };
+
+    Linking.getInitialURL().then((url) => {
+      if (url) handleUrl(url);
+    });
+
+    const subscription = Linking.addEventListener('url', ({ url }) => handleUrl(url));
+    return () => subscription.remove();
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       session,
       initializing,
+      isPasswordRecovery,
       signInWithEmail: async (email, password) => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         return { error: error?.message ?? null };
@@ -97,11 +142,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       signInWithApple: () => signInWithOAuthProvider('apple'),
       signInWithGoogle: () => signInWithOAuthProvider('google'),
+      sendPasswordResetEmail: async (email) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: Linking.createURL(`/${RESET_PASSWORD_PATH}`),
+        });
+        return { error: error?.message ?? null };
+      },
+      updatePasswordAfterRecovery: async (newPassword) => {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (!error) setIsPasswordRecovery(false);
+        return { error: error?.message ?? null };
+      },
+      changePassword: async (currentPassword, newPassword) => {
+        const email = session?.user.email;
+        if (!email) return { error: 'No signed-in account found.' };
+
+        // Supabase's updateUser doesn't verify the caller's current password
+        // on its own (a valid session is enough) - re-authenticate first so
+        // changing the password still requires knowing the old one.
+        const { error: reauthError } = await supabase.auth.signInWithPassword({
+          email,
+          password: currentPassword,
+        });
+        if (reauthError) return { error: 'Current password is incorrect.' };
+
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        return { error: error?.message ?? null };
+      },
       signOut: async () => {
         await supabase.auth.signOut();
       },
     }),
-    [session, initializing],
+    [session, initializing, isPasswordRecovery],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

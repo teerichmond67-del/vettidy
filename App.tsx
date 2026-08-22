@@ -18,7 +18,7 @@ configureNotifications();
 initPurchases();
 
 function AppContent() {
-  const { session, initializing } = useAuth();
+  const { session, initializing, isPasswordRecovery } = useAuth();
 
   if (initializing) {
     return (
@@ -28,7 +28,7 @@ function AppContent() {
     );
   }
 
-  return <RootNavigator isSignedIn={!!session} />;
+  return <RootNavigator isSignedIn={!!session} isPasswordRecovery={isPasswordRecovery} />;
 }
 
 export default function App() {

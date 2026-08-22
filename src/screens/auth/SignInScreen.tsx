@@ -62,6 +62,10 @@ export function SignInScreen({ navigation }: Props) {
         editable={!disabled}
       />
 
+      <Pressable onPress={() => navigation.navigate('ForgotPassword')} disabled={disabled}>
+        <Text style={styles.link}>Forgot password?</Text>
+      </Pressable>
+
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <Pressable

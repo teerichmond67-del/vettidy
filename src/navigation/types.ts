@@ -2,6 +2,7 @@ export type AuthStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   Onboarding: undefined;
+  ForgotPassword: undefined;
 };
 
 export type MainTabParamList = {
@@ -23,6 +24,8 @@ export type PaywallTrigger = 'pack_invite' | 'add_medication' | 'weight_tab' | '
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
+  ResetPassword: undefined;
+  ChangePassword: undefined;
   PetDetail: { petId: string };
   PetForm: { petId?: string };
   VaccinationForm: { petId: string; vaccinationId?: string };

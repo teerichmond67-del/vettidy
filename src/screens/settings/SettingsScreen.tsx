@@ -1,13 +1,19 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useMyPackRole } from '../../hooks/useMyPackRole';
 import { usePack } from '../../hooks/usePack';
+import type { MainTabParamList, RootStackParamList } from '../../navigation/types';
 
-export function SettingsScreen() {
+type Props = BottomTabScreenProps<MainTabParamList, 'Settings'>;
+
+export function SettingsScreen({ navigation }: Props) {
   const { session, signOut } = useAuth();
   const { packId } = usePack();
   const { isSitter } = useMyPackRole(packId);
+  const rootNavigation = navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
 
   // Spec.md §9: sitter_view_only members must not see the Settings/billing
   // screen. They still need a way to sign out of their own device, so this
@@ -17,6 +23,12 @@ export function SettingsScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Account</Text>
         {session?.user.email ? <Text style={styles.email}>{session.user.email}</Text> : null}
+        <Pressable
+          style={styles.changePasswordButton}
+          onPress={() => rootNavigation?.navigate('ChangePassword')}
+        >
+          <Text style={styles.changePasswordText}>Change Password</Text>
+        </Pressable>
         <Pressable style={styles.signOutButton} onPress={signOut}>
           <Text style={styles.signOutText}>Sign Out</Text>
         </Pressable>
@@ -31,6 +43,12 @@ export function SettingsScreen() {
       <Text style={styles.subtitle}>
         Subscription management and notification preferences go here
       </Text>
+      <Pressable
+        style={styles.changePasswordButton}
+        onPress={() => rootNavigation?.navigate('ChangePassword')}
+      >
+        <Text style={styles.changePasswordText}>Change Password</Text>
+      </Pressable>
       <Pressable style={styles.signOutButton} onPress={signOut}>
         <Text style={styles.signOutText}>Sign Out</Text>
       </Pressable>
@@ -59,8 +77,19 @@ const styles = StyleSheet.create({
     color: '#666',
     textAlign: 'center',
   },
-  signOutButton: {
+  changePasswordButton: {
     marginTop: 24,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  changePasswordText: {
+    fontWeight: '600',
+  },
+  signOutButton: {
+    marginTop: 12,
     borderWidth: 1,
     borderColor: '#c00',
     borderRadius: 8,
